@@ -1,0 +1,91 @@
+{% extends 'base_labtests.html' %}
+{% load staticfiles %}
+<!-- 
+link for the popup
+
+http://makecodeeasy.blogspot.ug/2012/07/popup-in-java-script-and-css.html -->
+
+{% block content %}
+
+  
+
+
+  <style type="text/css" >
+ .bs-example{
+      margin: 20px;
+    }
+
+
+  </style>
+
+</style>
+<div class="container-register100">
+ <div class="bs-example">
+
+    <table class="table table-condensed">
+  <thead>
+    <tr>
+    <th class="border-0">Mobile Number</th>
+    <th class="border-0">Area</th>
+    <th class="border-0">City</th>
+    <th class="border-0">Message</th>
+    <th class="border-0">Total</th>
+    <th class="border-0">Time</th>
+    <th class="border-0">Staff No</th>
+    <th class="border-0">Staff Name</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for ordered_drug  in ordered_drugs %}
+    <tr>
+       
+    <td>{{ordered_drug.telno}}</td>
+    <td>{{ordered_drug.area}}</td>
+    <td>{{ordered_drug.city}}</td>
+    <td>{{ordered_drug.msg}}</td>
+    <td>{{ordered_drug.total}}</td>
+    <td>{{ordered_drug.when}}</td>
+     <td>{{ordered_drug.staff_no}}</td>
+    <td>{{ordered_drug.staff_name}}</td>
+    </tr>
+{% endfor %}
+  </tbody>
+
+</table>
+
+{% if ordered_drugs.has_other_pages %}
+  <ul class="pagination">
+    {% if ordered_drugs.has_previous %}
+      <li><a href="?page={{ ordered_drugs.previous_page_number }}">&laquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&laquo;</span></li>
+    {% endif %}
+    {% for i in ordered_drugs.paginator.page_range %}
+      {% if ordered_drugs.number == i %}
+        <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+      {% else %}
+        <li><a href="?page={{ i }}">{{ i }}</a></li>
+      {% endif %}
+    {% endfor %}
+    {% if ordered_drugs.has_next %}
+      <li><a href="?page={{ ordered_drugs.next_page_number }}">&raquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&raquo;</span></li>
+    {% endif %}
+  </ul>
+{% endif %}
+
+
+</div>
+
+
+</div>
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+
+{% endblock %}
+
+	

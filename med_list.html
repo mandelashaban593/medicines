@@ -1,0 +1,55 @@
+{% extends 'base_labtests.html' %}
+
+{% load widget_tweaks %}
+
+{% block content %}
+   <form method="get">
+    <div class="well">
+      <h4 style="margin-top: 0">Medicine Name</h4>
+      <div class="row">
+        <div class="form-group col-sm-4 col-md-3">
+          {{ filter.form.nmane.label_tag }}
+          {% render_field filter.form.mname class="form-control" %}
+        </div>
+
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary">
+        <span class="glyphicon glyphicon-search"></span> Search
+      </button>
+    </div>
+  </form>
+
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Price</th>
+        <th>City</th>
+        <th>Area</th>
+        <th>Address</th>
+     <th>clinic</th>
+
+      </tr>
+    </thead>
+    <tbody>
+      {% for med in filter.qs %}
+        <tr>
+          <td>{{ med.mname }}</td>
+          <td>{{ med.desc }}</td>
+          <td>{{ med.price }}</td>
+          <td>{{ med.city}}</td>
+          <td>{{ med.area}}</td>
+          <td>{{ med.address}}</td>
+           <td>{{ med.clinic}}</td>
+
+        </tr>
+  {% empty %}
+        <tr>
+          <td colspan="5">No data</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

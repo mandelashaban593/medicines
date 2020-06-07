@@ -1,0 +1,220 @@
+{% extends "base_pat.html" %}
+{% load static %}
+
+{% block content %}
+
+
+
+<style type="text/css">
+    
+
+
+.sidebar {
+  margin: 0;
+  padding: 0;
+  width: 200px;
+  background-color: #f1f1f1;
+  position: relative;
+  height: 100%;
+  overflow: auto;
+}
+
+.sidebar a {
+  display: block;
+  color: black;
+  padding: 16px;
+  text-decoration: none;
+}
+ 
+.sidebar a.active {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.sidebar a:hover:not(.active) {
+  background-color: #555;
+  color: white;
+}
+
+div.content, table {
+    top:50px;
+    position: absolute;
+  margin-left: 100px;
+  padding: 1px 16px;
+  
+}
+
+
+
+@media screen and (max-width: 700px) {
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: relative;
+  }
+  .sidebar a {float: left;}
+  div.content {margin-left: 0;}
+}
+
+@media screen and (max-width: 400px) {
+  .sidebar a {
+    text-align: center;
+    float: none;
+  }
+}
+
+</style>
+
+<section class="wrap-login10 p-l-50 p-r-50 p-t-77 p-b-30"  style="margin-bottom: 1000px;margin-top:0px;padding-bottom: 300px;width: 200px; margin-left: 200px; border: 0px;margin-left: 0px;">
+
+<div style="height:500px;width: 34px;border: 0px;margin-left: 0px;">
+<div class="sidebar" style="height:500px;width: 120px;border: 0px;margin-left: 0px;">
+
+  <a href="#">Welcome {{ user.username }}</a>
+  <a class="active" href="{% url 'user_dashboard' %}">Dashboard</a>
+  <!-- <a href="#news">Notifications</a> -->
+  <a class="activ" href="{% url 'presc' %}">Prescription</a>
+ <a href="{% url 'my_profile' %}">Profile</a>
+  <a href="{% url 'logout'  %}">Logout</a>
+  
+</div>
+
+
+
+
+<div class="container" style="margin-top: 20000px;">
+     <div class="row no-gutters">
+
+        {% if typePay == 'consult_pay' %}
+<p style="width: 700px;
+border: 5px solid #D8D8D8;
+
+border-radius: 11px;
+font-family: Arial;
+font-size: 11px;
+text-transform: uppercase;
+background-color: rgb(236, 255, 216);
+">Thank you for Logging in. Click  <a  href="/" >Ask A Doctor</a> 
+</p>
+{% endif %}</center></p>
+
+</h1>
+
+
+ <table style="margin-bottom: 1000px;padding-bottom: 300px;margin-left: 150px; border: 0px;width: 0px;margin-top:0px; ">
+  <tr><td>
+
+<form method="GET"  class="wrap-login100 p-l-50 p-r-50 p-t-77 p-b-30"   style="margin-top:120px;margin-left: 50px; width: 200px; border:0px">
+
+    <div class="input-field" style="margin-top:120px;margin-left: 50px; width: 200px; border:0px">
+
+       <table  style="margin-top:70px;margin-left: 50px; width: 100px; border:0px"><tr><td> <input type="text" name="q" value="{{ request.GET.q }}" class="input100" style="width:150px;" placeholder="Search Here..."></td><td> <button class="btn" type="submit" name="action" style="font-size: 110%;line-height: 1;text-align: center;background-color: #1fadc5;display: inline-block;color: #fff !important;border-radius: 3em;cursor: pointer;max-width: 750px;width: 80px;padding: 0.9em;margin-top: 4px;border: 0;">Search</button></td></tr></table>
+          
+
+
+    </div>
+</form>
+</td></tr>
+</table>
+
+
+
+  <table class="tabl"   style="margin-top:180px;margin-left: 77px; width: 570px; border:0px"  id="book-table">
+    <thead>
+      <tr>
+        
+
+         <th class="border-0">Phone</th>
+        <th class="border-0">Area</th>
+        <th class="border-0">City</th>
+        <th class="border-0">Message</th>
+        <th class="border-0">Total</th>
+        <th class="border-0">Time</th>
+        <th class="border-0">Staff No</th>
+        <th class="border-0">Staff Name</th>
+
+      </tr>
+    </thead>
+    <tbody>
+
+   {% for ordered_drug in medicines_ordered  %}
+<tr>  
+  {% ifchanged ordered_drug.id %} 
+
+   <td>{{ordered_drug.telno}}</td>
+    <td>{{ordered_drug.area}}</td>
+    <td>{{ordered_drug.city}}</td>
+    <td>{{ordered_drug.msg}}</td>
+    <td>{{ordered_drug.total}}</td>
+    <td>{{ordered_drug.when}}</td>
+     <td>{{ordered_drug.staff_no}}</td>
+    <td>{{ordered_drug.staff_name}}</td>
+
+  {% endifchanged %}
+    
+</tr>  
+{% endfor %}
+
+
+    </tbody>
+  </table>
+
+
+
+
+
+
+<table style="margin-top:700px;margin-left: 180px; width: 900px; border:0px">
+
+<tr style="width: 900px;">
+<td style="width: 900px;">
+
+<ul class="pagination">
+
+{% if medicines_ordered.has_previous %}
+    <li><a href="?page={{ medicines_ordered.previous_page_number }}"><i class="fa fa-chevron-left" aria-hidden="true">Previous</i></a></li>
+{% else %}
+    <li class="disabled"><span><i class="fa fa-chevron-left" aria-hidden="true">Previous</i></span></li>
+{% endif %}
+
+{% if medicines_ordered.number|add:'-4' > 1 %}
+    <li><a href="?page={{ medicines_ordered.number|add:'-5' }}">&hellip;</a></li>
+{% endif %}
+
+{% for i in medicines_ordered.paginator.page_range %}
+    {% if medicines_ordered.number == i %}
+        <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+    {% elif i > medicines_ordered.number|add:'-5' and i < medicines_ordered.number|add:'5' %}
+        <li><a href="?page={{ i }}">{{ i }}</a></li>
+    {% endif %}
+{% endfor %}
+
+{% if medicines_ordered.paginator.num_pages > medicines_ordered.number|add:'4' %}
+    <li><a href="?page={{ medicines_ordered.number|add:'5' }}">&hellip;</a></li>
+{% endif %}
+
+{% if medicines_ordered.has_next %}
+    <li><a href="?page={{ medicines_ordered.next_page_number }}"><i class="fa fa-chevron-right" aria-hidden="true">Next</i></a></li>
+{% else %}
+    <li class="disabled"><span><i class="fa fa-chevron-right" aria-hidden="true">Next</i></span></li>
+{% endif %}
+
+</ul>
+
+</td>
+</tr>
+</table>
+
+
+
+   </div>
+</div> <!--closing content   -->
+
+{% endblock %}
+
+
+{% block extra_body %}
+    
+    </div>
+</section>
+{% endblock %}

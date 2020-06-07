@@ -1,0 +1,188 @@
+{% extends 'base_pat.html' %}
+{% load staticfiles %}
+<!-- 
+link for the popup
+
+http://makecodeeasy.blogspot.ug/2012/07/popup-in-java-script-and-css.html -->
+
+{% block content %}
+  <script type="text/javascript">
+var numbers = /^[0-9]+$/;
+
+function chkblnk(eid,errid)
+{
+var x=document.getElementById(eid).value;
+if(x=="")
+{
+document.getElementById(errid).innerHTML="please fill this field";
+}
+else
+{
+document.getElementById(errid).innerHTML="";
+}
+}
+ 
+function chkAplha(event,err)
+{
+if(!((event.which>=65 && event.which<=90) || (event.which>=97 && event.which<=122) || event.which==0 || event.which==8))
+{
+document.getElementById(err).innerHTML="invalid name format";
+return false;
+}
+}
+ 
+
+function chkPhone(event,err) {
+ 
+    if (event.which >= 10 && (event.which < 48 || event.which > 57)) {
+
+        document.getElementById(err).innerHTML="invalid Phone number format";
+        return false;
+    }
+ 
+}
+
+function chkeid()
+{
+var e=document.getElementById("phone").value;
+
+if(atpos<4 || dotpos<atpos+3)
+{
+document.getElementById("error2").innerHTML="invalid email";
+}
+else
+{
+document.getElementById("error2").innerHTML="";
+}
+//alert(atpos+" "+dotpos);
+}
+
+
+
+function chkeid()
+{
+var e=document.getElementById("e").value;
+var atpos=e.indexOf("@");
+var dotpos=e.lastIndexOf(".");
+if(atpos<4 || dotpos<atpos+3)
+{
+document.getElementById("error2").innerHTML="invalid email";
+}
+else
+{
+document.getElementById("error2").innerHTML="";
+}
+//alert(atpos+" "+dotpos);
+}
+</script>
+
+
+
+{% if error_pay %}
+  <script type="text/javascript">
+    alert("Payment failed due to error  from our system and we will get back soon to help you")
+  </script>  
+  {% endif %}
+
+
+
+{% if pay_success %}
+  <script type="text/javascript">
+    alert("You have successfully ordered for medicines and will be delivered soon to your door")
+  </script>  
+  {% endif %}
+
+
+ <form   class="wrap-login100 p-l-50 p-r-50 t-77 p-b-30"  action="{% url 'orderdrugs'  %}"  method="POST" autocomplete="off"   name="OrderDrugsForm" class="form-style-6" style="width:800px; margin-left: 360px;"  onsubmit="return VALIDATEORDERMED()">
+
+    <table  class="table table-hover small-text" id="tb" style="width:800px">
+    <tr class="tr-header" tyle="width:800px">
+    <th>Drug Name.</th>
+    <th>Amount</th>
+    <th><a href="javascript:void(0);" style="font-size:18px;" id="addMore" title="Add More Person"><span class="glyphicon glyphicon-plus"></span></a></th>
+    <tr tyle="width:800px" >
+    <td><input type="text" name="drug" class="form-control" id="d"  onblur="chkblnk('d','error5')"><div class="col" id="error5" style="color:red"></div></td>
+    <td><input type="text" name="amount" class="form-control"  id="amt"  onblur="chkblnk('amt','error6')"><div class="col" id="error6" style="color:red"></div></td>
+    <td><a href='javascript:void(0);'  class='remove'><span class='glyphicon glyphicon-remove'></span></a></td>
+    </tr>
+    </table>
+
+    <p>
+       <table><tr><td> <select name="countryCode" id=""  style="height:30px;width:130px;">
+                      <option data-countryCode="UG" value="256">Uganda (+256)</option>
+                      </select></td> <td><input class="input100" type="text" name="telno" placeholder ="Telephone Number" style="width:200px;" id="phone" onkeypress="return chkPhone(event,'error2')"  onblur="chkblnk('phone','error2')"></td><td><div class="col" id="error2" style="color:red"></div></td></tr></table>
+        <span class="focus-input100"></span>
+                        <span class="symbol-input100"></span>
+    </p>
+    <p><table><tr><td> <input class="input100" type="text" name="username" placeholder ="Username" style="width:330px;"  id="username"  onblur="chkblnk('username','error4')"></td><td><div class="col" id="error4" style="color:red"></div></td></tr></table>
+        <span class="focus-input100"></span>
+                        <span class="symbol-input100"></span>
+    </p>
+    <p><table><tr><td> <input class="input100" type="text" name="age" placeholder ="Age" style="width:330px;"  id="Age"  onblur="chkblnk('username','error3')"></td><td><div class="col" id="error3" style="color:red"></div></td></tr></table>
+     
+           <div class="col" id="error3" style="color:red"></div>
+        <span class="focus-input100"></span>
+                        <span class="symbol-input100"></span>
+    </p>
+    <p>
+     
+     <table><tr><td> <select type="text" name="city" Placeholder="Patient Age" style="width:330px;"  id="city" onblur="chkblnk('city','error7')">
+                        <option value="">Select City</option>
+                         <option value="Kampala">Kampala</option>
+                        </select></td><td><div class="col" id="error7" style="color:red"></div></td></tr></table>
+        </p>
+
+      <p>  
+      
+<table><tr><td> <select type="text" name="area" Placeholder="Patient Area" style="width:330px;" id="area"  onblur="chkblnk('area','error8')">
+       <option value="">Select  Area</option>
+     {% include "area_in_kampala.html" %} 
+      </select></td><td><div class="col" id="error8" style="color:red"></div></td></tr></table>
+
+  </p>
+
+            <p>
+            <!-- <a style="font-family: sans-serif;font-size: 20px;color:rgb(8, 218, 243);" href="/admin/">Admin Login --></a>
+
+            <input type="submit" id="submit" class="rea"  style="font-size: 110%;
+line-height: 1;
+text-align: center;
+background-color: #1fadc5;
+display: inline-block;
+color: #fff !important;
+border-radius: 3em;
+cursor: pointer;
+max-width: 350px;
+width: 100%;
+padding: 0.9em;
+margin-top: 11px;
+border: 0;"  value="SUBMIT" name="SUBMIT" required>
+           
+             </p>
+   
+
+    </form>
+
+     <link  rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script> 
+    <script>
+    $(function(){
+        $('#addMore').on('click', function() {
+                  var data = $("#tb tr:eq(1)").clone(true).appendTo("#tb");
+                  data.find("input").val('');
+         });
+         $(document).on('click', '.remove', function() {
+             var trIndex = $(this).closest("tr").index();
+                if(trIndex>1) {
+                 $(this).closest("tr").remove();
+               } else {
+                 alert("Sorry!! Can't remove first row!");
+               }
+          });
+    });      
+    </script>
+
+
+
+{% endblock %}

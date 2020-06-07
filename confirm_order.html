@@ -1,0 +1,328 @@
+{% extends 'base_confirm.html' %}
+{% load staticfiles %}
+<!-- 
+link for the popup
+
+http://makecodeeasy.blogspot.ug/2012/07/popup-in-java-script-and-css.html -->
+
+{% block content %}
+
+<style type="text/css">
+      #my_bar {
+    width: 100%;
+    height: 45px;
+    display:block;
+    padding-bottom: 0px;
+}
+
+ #my_bar1 {
+    width: 900px;
+    height: 45px;
+    display:block;
+    padding-bottom: 0px;
+}
+#my_input {
+    height: 100%;
+    width: 100%;
+    text-align: center;
+}
+#my_input_submit {
+    height: 100%;
+}
+input, select {
+    display:inline-block;
+    vertical-align:middle;
+}
+
+
+.some-class {
+     
+      clear: none;
+      width: 330px;
+    }
+    
+    label {
+      float: left;
+      clear: none;
+      display: block;
+      padding: 0px 1em 0px 8px;
+    }
+    
+    input[type=text],
+    input.input100 {
+      float: left;
+      clear: none;
+      margin: 2px 0 0 2px;
+    }
+
+
+
+</style>
+
+
+
+
+
+
+  <form    class="wrap-login100 p-l-50 p-r-50 p-t-77 p-b-30"  method="POST"    id="medicine-form2"  style="width:800px;margin-right: 400px" >
+
+        {% csrf_token %}
+        
+        <h6 style="color:green;font-size: 14px;">
+        1.We shall pay back your money  incase  <br>you do not get your medicines delivered to your door </h6>
+        <span  style="font-size: 24px;color: #333333;text-transform: uppercase;width: 100%;display: block;">
+                     Confirm  Order 
+                    </span>        
+  
+  <div id="wait" style="display: none; width: 1300px; height: 100%; top: 70px; left: 0px; position: fixed; z-index: 10000; text-align: center;">
+            <img src="{% static 'images/loading-gif-blue-1.gif' %}" width="300" height="45" alt="Loading..." style="position: fixed; top: 5%; left: 30%;" />
+</div>
+
+
+        
+
+         <div class="some-class">
+                  <label for="y">Drugs </label> <input class="input100" type="text" name="drugs"  value="{{drugs}}" style="color:red" >
+          </div>
+
+          <div class="some-class">
+                  <label for="y">Total  </label> <input class="input100" type="text" name="tot_amount"  value="{{tot_amount}}" style="color:red" id="tot_amount">
+          </div>
+
+           <div class="some-class">
+                  <label for="y">Phonenumber  </label> <input class="input100" type="text" name="telno"  id="telno" value="{{telno}}" style="color:red">
+          </div>
+
+          <div class="some-class">
+                  <label for="y">Address  </label> <input class="input100" type="text" name="address"  value="{{address}}" style="color:red">
+          </div>
+
+        <input type="hidden" name="role"  id="dname" value="patient"/> 
+         <input type="hidden" name="page"  id="dname" value="0"/> 
+
+          <input type="hidden" name="username"  id="username" value="{{username}}"/> 
+          <input type="hidden" name="area"  id="username" value="{{area}}"/>
+          
+          <input type="hidden" name="med_id"  id="med_id" value="{{med_id}}"/> 
+
+<div class="some-class">
+<table  style="border-spacing: 0px; " ><tr><td><input type="submit" id="submit" class="rea"  style="font-size: 110%;line-height: 1;text-align: center;background-color: #1fadc5;display: inline-block;color: #fff !important;border-radius: 3em;cursor: pointer;max-width: 350px;width: 125px;padding: 0.9em;margin-top: 11px;border: 0;"  value="Pay Now" name="submit" required></td><td><input type="submit" id="submit2" class="rea"  style="font-size: 110%;line-height: 1;text-align: center;background-color: #1fadc5;display: inline-block;color: #fff !important;border-radius: 3em;cursor: pointer;max-width: 350px;width: 135px;padding: 0.9em;margin-top: 11px;border: 0;"  value="Pay On Delivery" name="submit" required></td></tr> </table>
+          
+</div>
+<br/><br/><br/>
+    </form>
+
+
+
+     <link  rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script> 
+    <script>
+    $(function(){
+        $('#addMore').on('click', function() {
+                  var data = $("#tb tr:eq(1)").clone(true).appendTo("#tb");
+                  data.find("input").val('');
+         });
+         $(document).on('click', '.remove', function() {
+             var trIndex = $(this).closest("tr").index();
+                if(trIndex>1) {
+                 $(this).closest("tr").remove();
+               } else {
+                 alert("Sorry!! Can't remove first row!");
+               }
+          });
+    });      
+    </script>
+
+
+
+
+
+<script src="{% static 'js/inline-valid/jquery.min.js' %}"></script>
+
+<script type="text/javascript">
+  
+// Medicine  Order 
+//city,Area, address, countryCode, phone, username, deliv_fee, 
+// Submit post on submit
+    $('#medicine-form2').on('submit', function(event){
+        event.preventDefault();
+        console.log("form submitted!")  // sanity check
+        medicine();
+    });
+
+
+function medicine() {
+        console.log("create post is working!") // sanity check
+        $.ajax({
+            url : "/medicines/comfirmOrderMed/", // the endpoint
+            type : "POST", // http method
+            data : { drugs: $('#drugs').val(),tot_amount : $('#tot_amount').val() ,telno : $('#telno').val() ,address: $('#address').val() ,med_id : $('#med_id').val() ,area: $('#area').val() ,submit2: $('#submit2').val()}, // data sent with the post request
+            // handle a successful response
+            success : function(json) {
+                $('#post-text').val(''); // remove the value from the input
+                console.log(json); // log the returned json to the console
+                $("#talk").prepend("<li id='post-"+json.postpk+"'><strong>"+json.text+"</strong> - <em> "+json.author+"</em> - <a id='delete-post-"+json.postpk+"'>delete me</a></li>");
+               
+                if (json.Status == "OK") {
+                Swal.fire(
+              'Good job!',
+              'You successfully ordered medicines and will be delivered shortly to your address!',
+              'success'
+               )
+                }
+
+                if (json.Status == -2) {
+                
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Oops...',
+                  text: 'Invalid phone number!',
+                  footer: ''
+                })
+
+                }
+
+                if (json.Status == 2) {
+                
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Oops...',
+                  text: 'Payment failed due to insufficient balance on your mobile number. Atleast 4050 ugx shillings required!',
+                  footer: ''
+                })
+
+                }
+
+                if (json.Status == "-21") {
+
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Oops...',
+                  text: ' Your  IP address is not permitted to carry out transactions on this account!',
+                  footer: ''
+                })
+
+                }
+
+
+                if (json.Status == "None") {
+                
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Oops...',
+                  text: 'Payment failed due to network problem and we will get back soon to help you!',
+                  footer: ''
+                })
+
+                }
+
+
+                if (json.StatusCode == "5") {
+                Swal.fire(
+              'Good job!',
+              'You successfully ordered medicines and will be delivered shortly to your address!',
+              'success'
+               )
+                }
+
+
+
+
+
+             if (json.StatusCode == "None") {
+                
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Oops...',
+                  text: 'Please use  *165# to complete the payment!',
+                  footer: ''
+                })
+
+            }
+
+
+             if (json.StatusCode == "2") {
+                
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Oops...',
+                  text: 'Payment failed due to insufficient balance on your mobile number. Atleast 4050 ugx shillings required!',
+                  footer: ''
+                })
+
+            }
+
+            if (json.StatusCode == "4") {
+                
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Oops...',
+                  text: 'Please use  *165# to complete the payment! or try again!',
+                  footer: ''
+                })
+
+            }
+
+            if (json.StatusCode == "-8") {
+                
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Oops...',
+                  text: 'Transaction id already exists, please order medicine again or  call + 256 775 719 034!',
+                  footer: ''
+                })
+
+            }
+
+
+
+            if (json.StatusCode == "-9999") {
+                
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Oops...',
+                  text: 'Phone number not captured',
+                  footer: ''
+                })
+
+            }
+
+
+            },
+            // handle a non-successful response
+            error : function(xhr,errmsg,err) {
+                
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Oops...',
+                  text: ' We have encountered an error:',
+                  footer: ''
+                })
+
+            
+
+                 // add the error to the dom
+                console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+            }
+        });
+    };
+
+
+</script>
+    <!-- Foundation & FontAwesome -->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/inline-valid/foundation.css' %}">
+    <script src="{% static 'js/inline-valid/d3.v3.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/inline-valid/trianglify.min.js' %}"></script>
+    
+
+<script src="{% static 'js/inline-valid/jquery-1.12.2.min.js' %}"></script>
+<script src="{% static 'js/inline-valid/sweetalert2
+
+
+
+
+
+{% endblock %}
+
+  
